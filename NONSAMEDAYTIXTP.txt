@@ -1,0 +1,21 @@
+SELECT 
+    c.email AS 'E-Mail',
+    summary AS 'Summary', 
+    description AS 'Description', 
+    a.id as "Ticket ID", 
+    (strftime('%s', a.closed_at)-strftime('%s', a.created_at))/3600/24 as 'Days_Open', 
+    a.created_at AS 'Created On', 
+    closed_at AS 'Closed On'
+FROM 
+    tickets a,
+    ticket_work b,
+    users c
+WHERE 
+    a.created_by = c.id AND 
+    a.id = b.ticket_id AND
+    a.status = 'closed' AND 
+    a.c_company = 'Technology Partners'AND
+    date(a.created_at) BETWEEN datetime('now','start of month','-1 month') AND datetime('now', 'start of month', '-1 day') AND
+	(strftime('%s', a.closed_at)-strftime('%s', a.created_at))/3600/24 >= 1
+GROUP BY
+	a.id;

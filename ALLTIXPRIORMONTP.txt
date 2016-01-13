@@ -1,0 +1,20 @@
+ALL TICKETS FOR THE PREVIOUS MONTH -TP
+
+SELECT 
+    c.email AS 'E-Mail',
+    summary AS 'Summary', 
+    description AS 'Description', 
+    a.id as "Ticket ID", 
+    closed_at AS 'Closed On',
+    total(time_spent)/60 AS 'Time Spent on Ticket(Min)'
+FROM 
+    tickets a,
+    ticket_work b,
+    users c
+WHERE 
+    a.created_by = c.id AND 
+    a.id = b.ticket_id AND
+    a.status = 'closed' AND 
+    date(a.created_at) BETWEEN datetime('now','start of month','-1 month') AND datetime('now', 'start of month', '-1 day')
+GROUP BY 
+    a.id;
