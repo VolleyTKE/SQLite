@@ -1,26 +1,13 @@
 SELECT
     a.id AS 'Ticket ID', 
     a.summary AS 'Summary',
-    total(time_spent)/60 AS 'Time Spent on Ticket',
     a.created_at AS 'Date Created',
-    coalesce(c.first_name, '') || ' ' || coalesce(c.last_name, '') AS 'User', 
-    email AS 'E-Mail',
-       (
-       SELECT  
-                  total(y.time_spent)/3600
-
-       FROM tickets x, 
-                  ticket_work y
-        WHERE
-                x.id = y.ticket_id and
-                date(x.created_at) >= datetime('now', 'start of month')
-        ) AS 'Total Time on Tickets in Hours'
-FROM tickets a, 
-         ticket_work b, 
-         users c
-WHERE a.assigned_to = c.id and 
-            a.id = b.ticket_id and
-            date(a.created_at) >= datetime('now', 'start of month')
+     email AS 'E-Mail'
+FROM tickets a,
+           users b
+WHERE a.assigned_to = b.id AND
+              date(a.created_at) BETWEEN datetime('now','start of month','-1 month') AND datetime('now', 'start of month', '-1 day') AND
+              b.id = '4'
 GROUP BY
-       a.id, 
-     c.first_name;
+              a.id,
+              b.first_name;
